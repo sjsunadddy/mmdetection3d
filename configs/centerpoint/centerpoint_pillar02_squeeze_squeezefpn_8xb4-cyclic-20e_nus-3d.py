@@ -246,8 +246,8 @@ train_dataloader = dict(
     persistent_workers=True,
     sampler=dict(shuffle=True, type='DefaultSampler'))
 test_dataloader = dict(
-    dataset=dict(pipeline=test_pipeline, metainfo=dict(classes=class_names)))
+    dataset=dict(pipeline=test_pipeline, metainfo=dict(version='v1.0-mini', classes=class_names)))
 val_dataloader = dict(
-    dataset=dict(pipeline=test_pipeline, metainfo=dict(classes=class_names)))
+    dataset=dict(pipeline=test_pipeline, metainfo=dict(version='v1.0-mini', classes=class_names)))
 
 train_cfg = dict(by_epoch=True, max_epochs=20, val_interval=20)
