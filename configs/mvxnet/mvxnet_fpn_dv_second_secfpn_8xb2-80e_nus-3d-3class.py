@@ -141,11 +141,6 @@ input_modality = dict(use_lidar=True, use_camera=True)
 data_prefix = dict(
     pts='samples/LIDAR_TOP',
     CAM_FRONT='samples/CAM_FRONT',
-    CAM_FRONT_LEFT='samples/CAM_FRONT_LEFT',
-    CAM_FRONT_RIGHT='samples/CAM_FRONT_RIGHT',
-    CAM_BACK='samples/CAM_BACK',
-    CAM_BACK_RIGHT='samples/CAM_BACK_RIGHT',
-    CAM_BACK_LEFT='samples/CAM_BACK_LEFT',
     sweeps='sweeps/LIDAR_TOP')
 backend_args = None
 train_pipeline = [
@@ -155,7 +150,7 @@ train_pipeline = [
         load_dim=4,
         use_dim=4,
         backend_args=backend_args),
-    dict(type='LoadImageFromFile', backend_args=backend_args),
+    dict(type='LoadImageFromFileMono3D', backend_args=backend_args),
     dict(type='LoadAnnotations3D', with_bbox_3d=True, with_label_3d=True),
     dict(
         type='RandomResize', scale=[(640, 192), (2560, 768)], keep_ratio=True),
@@ -189,7 +184,7 @@ test_pipeline = [
         load_dim=4,
         use_dim=4,
         backend_args=backend_args),
-    dict(type='LoadImageFromFile', backend_args=backend_args),
+    dict(type='LoadImageFromFileMono3D', backend_args=backend_args),
     dict(
         type='MultiScaleFlipAug3D',
         img_scale=(1280, 384),
@@ -207,7 +202,20 @@ test_pipeline = [
             dict(
                 type='PointsRangeFilter', point_cloud_range=point_cloud_range),
         ]),
-    dict(type='Pack3DDetInputs', keys=['points', 'img'])
+    #dict(type='Pack3DDetInputs', keys=['points', 'img'])
+    dict(
+        type='Pack3DDetInputs',
+        keys=[
+            'points', 'img', 'gt_bboxes_3d', 'gt_labels_3d', 'gt_bboxes',
+            'gt_labels'
+        ],
+        meta_keys=[
+            'cam2img', 'ori_cam2img', 'lidar2cam', 'lidar2img', 'cam2lidar',
+            'ori_lidar2img', 'img_aug_matrix', 'box_type_3d', 'sample_idx',
+            'lidar_path', 'img_path', 'transformation_3d_flow', 'pcd_rotation',
+            'pcd_scale_factor', 'pcd_trans', 'img_aug_matrix',
+            'lidar_aug_matrix', 'num_pts_feats'
+        ])
 ]
 modality = dict(use_lidar=True, use_camera=True)
 train_dataloader = dict(
