@@ -168,13 +168,6 @@ train_pipeline = [
         keys=[
             'points', 'img', 'gt_bboxes_3d', 'gt_labels_3d', 'gt_bboxes',
             'gt_labels'
-        ],
-        meta_keys=[
-            'cam2img', 'ori_cam2img', 'lidar2cam', 'lidar2img', 'cam2lidar',
-            'ori_lidar2img', 'img_aug_matrix', 'box_type_3d', 'sample_idx',
-            'lidar_path', 'img_path', 'transformation_3d_flow', 'pcd_rotation',
-            'pcd_scale_factor', 'pcd_trans', 'img_aug_matrix',
-            'lidar_aug_matrix', 'num_pts_feats'
         ])
 ]
 test_pipeline = [
@@ -208,13 +201,6 @@ test_pipeline = [
         keys=[
             'points', 'img', 'gt_bboxes_3d', 'gt_labels_3d', 'gt_bboxes',
             'gt_labels'
-        ],
-        meta_keys=[
-            'cam2img', 'ori_cam2img', 'lidar2cam', 'lidar2img', 'cam2lidar',
-            'ori_lidar2img', 'img_aug_matrix', 'box_type_3d', 'sample_idx',
-            'lidar_path', 'img_path', 'transformation_3d_flow', 'pcd_rotation',
-            'pcd_scale_factor', 'pcd_trans', 'img_aug_matrix',
-            'lidar_aug_matrix', 'num_pts_feats'
         ])
 ]
 modality = dict(use_lidar=True, use_camera=True)
