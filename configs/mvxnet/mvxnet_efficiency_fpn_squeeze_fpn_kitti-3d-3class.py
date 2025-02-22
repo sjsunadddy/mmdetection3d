@@ -4,6 +4,7 @@ _base_ = ['../_base_/schedules/cosine.py', '../_base_/default_runtime.py']
 voxel_size = [0.05, 0.05, 0.1]
 point_cloud_range = [0, -40, -3, 70.4, 40, 1]
 
+
 model = dict(
     type='DynamicMVXFasterRCNN',
     data_preprocessor=dict(
@@ -20,19 +21,17 @@ model = dict(
         bgr_to_rgb=False,
         pad_size_divisor=32),
     img_backbone=dict(
-        type='mmdet.ResNet',
-        depth=50,
-        num_stages=4,
-        out_indices=(0, 1, 2, 3),
-        frozen_stages=1,
+        type='mmdet.EfficientNet',  # Use EfficientNet
+        arch='b2',  # Choose the EfficientNet variant (b0, b1, b2, etc.)
+        out_indices=(0, 3, 5, 6),  # You can change this depending on which layers you need
+        frozen_stages=1,  # Freeze the first stage (if needed)
         norm_cfg=dict(type='BN', requires_grad=False),
         norm_eval=True,
-        style='caffe'),
+    ),  # Important: Use 'pytorch' style
     img_neck=dict(
         type='mmdet.FPN',
-        in_channels=[256, 512, 1024, 2048],
-        out_channels=256,
-        # make the image features more stable numerically to avoid loss nan
+        in_channels=[32, 48, 352, 1408],  # Correct in_channels for EfficientNet b0
+        out_channels=512,
         norm_cfg=dict(type='BN', requires_grad=False),
         num_outs=5),
     pts_voxel_encoder=dict(
@@ -46,11 +45,11 @@ model = dict(
         point_cloud_range=point_cloud_range,
         fusion_layer=dict(
             type='PointFusion',
-            img_channels=256,
+            img_channels=512,
             pts_channels=64,
             mid_channels=128,
             out_channels=128,
-            img_levels=[0, 1, 2, 3, 4],
+            img_levels=[0, 1, 2, 3, 4],  # Adjust if the number of FPN outputs changes
             align_corners=False,
             activate_out=True,
             fuse_out=False)),
@@ -60,21 +59,25 @@ model = dict(
         sparse_shape=[41, 1600, 1408],
         order=('conv', 'norm', 'act')),
     pts_backbone=dict(
-        type='SECOND',
+        type='SQUEEZE',
         in_channels=256,
-        layer_nums=[5, 5],
-        layer_strides=[1, 2],
-        out_channels=[128, 256]),
+        out_channels=[64, 128, 256 , 512],
+        #layer_nums=[3, 5, 5],
+        #layer_strides=[2, 2, 2],
+        norm_cfg=dict(type='BN', eps=1e-3, momentum=0.01),
+        conv_cfg=dict(type='Conv2d', bias=False)),
     pts_neck=dict(
-        type='SECONDFPN',
-        in_channels=[128, 256],
-        upsample_strides=[1, 2],
-        out_channels=[256, 256]),
+         type='SQUEEZEFPN',
+        in_channels=[64, 128, 256 , 512],
+        out_channels=[512, 512, 512, 512],
+        #upsample_strides=[0.5, 1, 2],
+        norm_cfg=dict(type='BN', eps=1e-3, momentum=0.01),
+        upsample_cfg=dict(type='deconv', bias=False)),
     pts_bbox_head=dict(
         type='Anchor3DHead',
         num_classes=3,
-        in_channels=512,
-        feat_channels=512,
+        in_channels=256,  # Might need adjustment
+        feat_channels=512,  # Might need adjustment
         use_direction_classifier=True,
         anchor_generator=dict(
             type='Anchor3DRangeGenerator',
@@ -101,25 +104,24 @@ model = dict(
         loss_dir=dict(
             type='mmdet.CrossEntropyLoss', use_sigmoid=False,
             loss_weight=0.2)),
-    # model training and testing settings
     train_cfg=dict(
         pts=dict(
             assigner=[
-                dict(  # for Pedestrian
+                dict(
                     type='Max3DIoUAssigner',
                     iou_calculator=dict(type='BboxOverlapsNearest3D'),
                     pos_iou_thr=0.35,
                     neg_iou_thr=0.2,
                     min_pos_iou=0.2,
                     ignore_iof_thr=-1),
-                dict(  # for Cyclist
+                dict(
                     type='Max3DIoUAssigner',
                     iou_calculator=dict(type='BboxOverlapsNearest3D'),
                     pos_iou_thr=0.35,
                     neg_iou_thr=0.2,
                     min_pos_iou=0.2,
                     ignore_iof_thr=-1),
-                dict(  # for Car
+                dict(
                     type='Max3DIoUAssigner',
                     iou_calculator=dict(type='BboxOverlapsNearest3D'),
                     pos_iou_thr=0.6,
@@ -156,8 +158,10 @@ train_pipeline = [
         backend_args=backend_args),
     dict(type='LoadImageFromFile', backend_args=backend_args),
     dict(type='LoadAnnotations3D', with_bbox_3d=True, with_label_3d=True),
+    #dict(
+    #    type='RandomResize', scale=[(640, 192), (2560, 768)], keep_ratio=True),
     dict(
-        type='RandomResize', scale=[(640, 192), (2560, 768)], keep_ratio=True),
+        type='RandomResize', scale=[(320, 96), (1280, 384)], keep_ratio=True),
     dict(
         type='GlobalRotScaleTrans',
         rot_range=[-0.78539816, 0.78539816],

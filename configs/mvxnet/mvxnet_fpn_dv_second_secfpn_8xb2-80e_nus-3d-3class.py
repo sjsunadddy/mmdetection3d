@@ -150,7 +150,8 @@ train_pipeline = [
         load_dim=4,
         use_dim=4,
         backend_args=backend_args),
-    dict(type='LoadImageFromFileMono3D', backend_args=backend_args),
+    dict(type='LoadImageFromFile', backend_args=backend_args),
+    #dict(type='LoadImageFromFileMono3D', backend_args=backend_args),
     dict(type='LoadAnnotations3D', with_bbox_3d=True, with_label_3d=True),
     dict(
         type='RandomResize', scale=[(640, 192), (2560, 768)], keep_ratio=True),
@@ -177,7 +178,8 @@ test_pipeline = [
         load_dim=4,
         use_dim=4,
         backend_args=backend_args),
-    dict(type='LoadImageFromFileMono3D', backend_args=backend_args),
+    dict(type='LoadImageFromFile', backend_args=backend_args),
+    #dict(type='LoadImageFromFileMono3D', backend_args=backend_args),
     dict(
         type='MultiScaleFlipAug3D',
         img_scale=(1280, 384),
@@ -220,6 +222,7 @@ train_dataloader = dict(
         #    pts='training/velodyne_reduced', img='training/image_2'),
         test_mode=False,
         data_prefix=data_prefix,
+        default_cam_key='CAM_FRONT',
         # we use box_type_3d='LiDAR' in kitti and nuscenes dataset
         # and box_type_3d='Depth' in sunrgbd and scannet dataset.
         box_type_3d='LiDAR',
@@ -241,6 +244,7 @@ test_dataloader = dict(
         #data_prefix=dict(
         #    pts='training/velodyne_reduced', img='training/image_2'),
         data_prefix=data_prefix,
+        default_cam_key='CAM_FRONT',
         test_mode=True,
         box_type_3d='LiDAR',
         backend_args=backend_args))
