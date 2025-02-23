@@ -20,19 +20,21 @@ model = dict(
         bgr_to_rgb=False,
         pad_size_divisor=32),
     img_backbone=dict(
-        type='mmdet.MobileNetV2',  # Use MobileNetV2 backbone
-        out_indices=(0, 1, 2, 3),  # Extract features from these layers
-        frozen_stages=1,  # Freeze the first stage (if needed)
-        norm_cfg=dict(type='BN', requires_grad=False),  # Use BatchNorm
-        norm_eval=True,
-        ),
-    img_neck=dict(
-        type='mmdet.FPN',  # Use Feature Pyramid Network (FPN) for neck
-        in_channels=[16, 24, 32, 64],  # Adjust the input channels according to MobileNetV2 (could vary with the model)
-        out_channels=256,  # Number of output channels from the FPN
+        type='mmdet.ResNet',
+        depth=50,
+        num_stages=4,
+        out_indices=(0, 1, 2, 3),
+        frozen_stages=1,
         norm_cfg=dict(type='BN', requires_grad=False),
-        num_outs=5,  # Output feature maps from 5 levels
-        ),
+        norm_eval=True,
+        style='caffe'),
+    img_neck=dict(
+        type='mmdet.FPN',
+        in_channels=[256, 512, 1024, 2048],
+        out_channels=256,
+        # make the image features more stable numerically to avoid loss nan
+        norm_cfg=dict(type='BN', requires_grad=False),
+        num_outs=5),
     pts_voxel_encoder=dict(
         type='DynamicVFE',
         in_channels=4,
@@ -58,16 +60,20 @@ model = dict(
         sparse_shape=[41, 1600, 1408],
         order=('conv', 'norm', 'act')),
     pts_backbone=dict(
-        type='SECOND',
+        type='SQUEEZE',
         in_channels=256,
-        layer_nums=[5, 5],
-        layer_strides=[1, 2],
-        out_channels=[128, 256]),
+        out_channels=[64, 128, 256 , 512],
+        #layer_nums=[3, 5, 5],
+        #layer_strides=[2, 2, 2],
+        norm_cfg=dict(type='BN', eps=1e-3, momentum=0.01),
+        conv_cfg=dict(type='Conv2d', bias=False)),
     pts_neck=dict(
-        type='SECONDFPN',
-        in_channels=[128, 256],
-        upsample_strides=[1, 2],
-        out_channels=[256, 256]),
+         type='SQUEEZEFPN',
+        in_channels=[64, 128, 256 , 512],
+        out_channels=[512, 512, 512, 512],
+        #upsample_strides=[0.5, 1, 2],
+        norm_cfg=dict(type='BN', eps=1e-3, momentum=0.01),
+        upsample_cfg=dict(type='deconv', bias=False)),
     pts_bbox_head=dict(
         type='Anchor3DHead',
         num_classes=3,
