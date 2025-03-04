@@ -107,4 +107,4 @@ class SQUEEZEFPN(BaseModule):
         # for i, feature in enumerate(fpn_features):
         #     print(f"FPN Feature {i} shape: {feature.shape}")
         # print(pool.shape)
-        return [pool]
+        return tuple(lateral_features)
