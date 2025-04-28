@@ -13,6 +13,8 @@ from .pointnet2_sa_ssg import PointNet2SASSG
 from .second import SECOND
 from .spvcnn_backone import MinkUNetBackboneV2, SPVCNNBackbone
 from .squeezenet import SQUEEZE
+from .fsd import FSD
+from .fsdv2 import FSDv2
 
 __all__ = [
     'ResNet', 'ResNetV1d', 'ResNeXt', 'SSDVGG', 'HRNet', 'NoStemRegNet',
