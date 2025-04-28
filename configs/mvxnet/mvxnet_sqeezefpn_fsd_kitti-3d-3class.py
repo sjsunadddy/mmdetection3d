@@ -249,5 +249,20 @@ val_dataloader = dict(
 
 test_dataloader = val_dataloader
 
+optim_wrapper = dict(
+    optimizer=dict(type='AdamW', lr=0.001, weight_decay=0.01),
+    clip_grad=dict(max_norm=35, norm_type=2),
+)
+
+val_evaluator = dict(
+    type='KittiMetric', ann_file='data/kitti/kitti_infos_val.pkl')
+test_evaluator = val_evaluator
+
+vis_backends = [dict(type='LocalVisBackend')]
+visualizer = dict(
+    type='Det3DLocalVisualizer', vis_backends=vis_backends, name='visualizer')
+
+train_cfg = dict(type='EpochBasedTrainLoop', max_epochs=20, val_interval=1)
+
 # Default setting for scaling LR automatically
 auto_scale_lr = dict(base_batch_size=16) 
