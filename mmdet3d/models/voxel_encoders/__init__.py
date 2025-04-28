@@ -2,10 +2,10 @@
 from .pillar_encoder import DynamicPillarFeatureNet, PillarFeatureNet
 from .voxel_encoder import (DynamicSimpleVFE, DynamicVFE, HardSimpleVFE,
                             HardVFE, SegVFE)
-from .fsd_vfe import FSDVFE
+from .fsd_vfe import FSDVFE, FSDv2VFE
 
 
 __all__ = [
     'PillarFeatureNet', 'DynamicPillarFeatureNet', 'HardVFE', 'DynamicVFE',
-    'HardSimpleVFE', 'DynamicSimpleVFE', 'SegVFE', 'FSDVFE'
+    'HardSimpleVFE', 'DynamicSimpleVFE', 'SegVFE', 'FSDVFE', 'FSDv2VFE'
 ]
