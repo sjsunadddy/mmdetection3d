@@ -3,10 +3,10 @@ from .pillar_scatter import PointPillarsScatter
 from .sparse_encoder import SparseEncoder, SparseEncoderSASSD
 from .sparse_unet import SparseUNet
 from .voxel_set_abstraction import VoxelSetAbstraction
-from .fsd_neck import FSDNeck
+from .fsd_middle_encoder import FSDMiddleEncoder
 
 
 __all__ = [
     'PointPillarsScatter', 'SparseEncoder', 'SparseEncoderSASSD', 'SparseUNet',
-    'VoxelSetAbstraction', 'FSDNeck'
+    'VoxelSetAbstraction', 'FSDMiddleEncoder'
 ]
