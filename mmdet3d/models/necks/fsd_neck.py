@@ -23,6 +23,8 @@ class FSDNeck(BaseModule):
         relu_before_extra_convs (bool): Whether to add relu before extra convs.
         no_norm_on_lateral (bool): Whether to add norm on lateral.
         norm_cfg (dict): Config for norm layer.
+        upsample_strides (list): Upsample strides for each level.
+        feature_propagation (bool): Whether to use feature propagation.
     """
 
     def __init__(self,
@@ -36,6 +38,8 @@ class FSDNeck(BaseModule):
                  relu_before_extra_convs=False,
                  no_norm_on_lateral=False,
                  norm_cfg=dict(type='BN', eps=1e-3, momentum=0.01),
+                 upsample_strides=None,
+                 feature_propagation=True,
                  init_cfg=None):
         super(FSDNeck, self).__init__(init_cfg=init_cfg)
         assert len(in_channels) == len(out_channels)
@@ -45,6 +49,8 @@ class FSDNeck(BaseModule):
         self.relu_before_extra_convs = relu_before_extra_convs
         self.no_norm_on_lateral = no_norm_on_lateral
         self.fp16_enabled = False
+        self.upsample_strides = upsample_strides if upsample_strides is not None else [1] * len(in_channels)
+        self.feature_propagation = feature_propagation
         self.upsample_cfg = dict(mode='nearest')
 
         if end_level == -1:
@@ -96,6 +102,19 @@ class FSDNeck(BaseModule):
                     norm_cfg=norm_cfg)
                 self.fpn_convs.append(extra_fpn_conv)
 
+        if feature_propagation:
+            self.feature_propagations = nn.ModuleList()
+            for i in range(len(in_channels) - 1):
+                self.feature_propagations.append(
+                    ConvModule(
+                        out_channels[i + 1],
+                        out_channels[i],
+                        1,
+                        stride=1,
+                        padding=0,
+                        norm_cfg=norm_cfg,
+                        act_cfg=None))
+
     def forward(self, inputs):
         """Forward function.
 
@@ -118,7 +137,10 @@ class FSDNeck(BaseModule):
         for i in range(used_backbone_levels - 1, 0, -1):
             prev_shape = laterals[i - 1].shape
             laterals[i - 1] += F.interpolate(
-                laterals[i], size=prev_shape[2:], **self.upsample_cfg)
+                laterals[i], 
+                size=prev_shape[2:],
+                stride=self.upsample_strides[i],
+                **self.upsample_cfg)
 
         # build outputs
         # part 1: from original levels
@@ -139,6 +161,13 @@ class FSDNeck(BaseModule):
                     outs.append(self.fpn_convs[i](F.relu(outs[-1])))
                 else:
                     outs.append(self.fpn_convs[i](outs[-1]))
+
+        # feature propagation
+        if self.feature_propagation:
+            for i in range(len(outs) - 1, 0, -1):
+                outs[i - 1] = outs[i - 1] + self.feature_propagations[i - 1](
+                    F.interpolate(outs[i], size=outs[i - 1].shape[-3:]))
+
         return tuple(outs)
 
 
