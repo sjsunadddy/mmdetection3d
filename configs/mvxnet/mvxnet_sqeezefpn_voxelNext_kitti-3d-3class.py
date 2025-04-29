@@ -36,7 +36,7 @@ model = dict(
     img_neck=dict(
         type='SQUEEZEFPN',
         in_channels=[64, 128, 256, 512],
-        out_channels=[512, 512, 512, 512],
+        out_channels=[64, 64, 64, 64],
         norm_cfg=dict(type='BN', eps=1e-3, momentum=0.01),
         upsample_cfg=dict(type='deconv', bias=False),
         conv_cfg=dict(type='Conv2d', bias=False)),
@@ -68,7 +68,7 @@ model = dict(
     pts_neck=dict(type='BEVPoolNeck', pool_type='max'),
     pts_fusion_layer=dict(
         type='LightweightAttentionFusion',
-        img_channels=512,
+        img_channels=64,
         pts_channels=64,
         mid_channels=64,
         out_channels=64,
