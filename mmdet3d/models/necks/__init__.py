@@ -6,10 +6,10 @@ from .imvoxel_neck import IndoorImVoxelNeck, OutdoorImVoxelNeck
 from .pointnet2_fp_neck import PointNetFPNeck
 from .second_fpn import SECONDFPN
 from .squeeze_fpn import SQUEEZEFPN
-from .fsd_neck import FSDNeck
+from .fsd_neck import FSDNeck, FSDv2Neck
 
 
 __all__ = [
     'FPN', 'SECONDFPN', 'OutdoorImVoxelNeck', 'PointNetFPNeck', 'DLANeck',
-    'IndoorImVoxelNeck','SQUEEZEFPN', 'FSDNeck'
+    'IndoorImVoxelNeck','SQUEEZEFPN', 'FSDNeck', 'FSDv2Neck'
 ]
