@@ -93,4 +93,6 @@ class RPFNet(nn.Module):
         # x: (B, C, H, W) BEV feature map
         for stage in self.stages:
             x = stage(x)
-        return x
+        # Anchor3DHead expects a tuple/list of multi-scale features.
+        # We return a single-scale tuple to stay compatible.
+        return (x, )
