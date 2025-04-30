@@ -37,7 +37,7 @@ model = dict(
     img_neck=dict(
         type='mmdet.FPN',  # Use Feature Pyramid Network (FPN) for neck
         in_channels=[16, 24, 32, 64],  # Adjust the input channels according to MobileNetV2 (could vary with the model)
-        out_channels=256,  # Number of output channels from the FPN
+        out_channels=64,  # Number of output channels from the FPN
         norm_cfg=dict(type='BN', requires_grad=False),
         num_outs=5,  # Output feature maps from 5 levels
         ),
@@ -69,7 +69,7 @@ model = dict(
     pts_neck=dict(type='BEVPoolNeck', pool_type='max'),
     pts_fusion_layer=dict(
         type='LightweightAttentionFusion',
-        img_channels=256,
+        img_channels=64,
         pts_channels=64,
         mid_channels=64,
         out_channels=64,
@@ -180,7 +180,7 @@ train_dataloader = dict(
     sampler=dict(type='DefaultSampler', shuffle=True),
     dataset=dict(
         type='RepeatDataset',
-        times=1,
+        times=2,
         dataset=dict(
             type=dataset_type,
             data_root=data_root,
