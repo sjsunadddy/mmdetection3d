@@ -38,7 +38,7 @@ model = dict(
     img_neck=dict(
         type='mmdet.FPN',
         in_channels=[32, 48, 352, 1408],  # Correct in_channels for EfficientNet b0
-        out_channels=512,
+        out_channels=64,
         norm_cfg=dict(type='BN', requires_grad=False),
         num_outs=5),
     pts_voxel_encoder=dict(
@@ -69,7 +69,7 @@ model = dict(
     pts_neck=dict(type='BEVPoolNeck', pool_type='max'),
     pts_fusion_layer=dict(
         type='LightweightAttentionFusion',
-        img_channels=512,
+        img_channels=64,
         pts_channels=64,
         mid_channels=64,
         out_channels=64,
@@ -180,7 +180,7 @@ train_dataloader = dict(
     sampler=dict(type='DefaultSampler', shuffle=True),
     dataset=dict(
         type='RepeatDataset',
-        times=1,
+        times=2,
         dataset=dict(
             type=dataset_type,
             data_root=data_root,
