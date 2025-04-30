@@ -178,7 +178,7 @@ test_pipeline = [
 modality = dict(use_lidar=True, use_camera=True)
 
 train_dataloader = dict(
-    batch_size=2, num_workers=2, sampler=dict(type='DefaultSampler', shuffle=True),
+    batch_size=2, num_workers=4, sampler=dict(type='DefaultSampler', shuffle=True),
     dataset=dict(type='RepeatDataset', times=2, dataset=dict(
         type=dataset_type, data_root=data_root, modality=modality,
         ann_file='kitti_infos_train.pkl',
@@ -218,4 +218,4 @@ vis_backends = [dict(type='LocalVisBackend')]
 visualizer = dict(
     type='Det3DLocalVisualizer', vis_backends=vis_backends, name='visualizer')
 
-train_cfg = dict(type='EpochBasedTrainLoop', max_epochs=20, val_interval=1)
+train_cfg = dict(type='EpochBasedTrainLoop', max_epochs=20, val_interval=5)
