@@ -204,7 +204,7 @@ test_pipeline = [
 modality = dict(use_lidar=True, use_camera=True)
 train_dataloader = dict(
     batch_size=2,
-    num_workers=2,
+    num_workers=4,
     sampler=dict(type='DefaultSampler', shuffle=True),
     dataset=dict(
         type='RepeatDataset',
@@ -269,7 +269,7 @@ vis_backends = [dict(type='LocalVisBackend')]
 visualizer = dict(
     type='Det3DLocalVisualizer', vis_backends=vis_backends, name='visualizer')
 
-train_cfg = dict(type='EpochBasedTrainLoop', max_epochs=20, val_interval=1)
+train_cfg = dict(type='EpochBasedTrainLoop', max_epochs=20, val_interval=5)
 
 # You may need to download the model first is the network is unstable
 #load_from = 'https://download.openmmlab.com/mmdetection3d/pretrain_models/mvx_faster_rcnn_detectron2-caffe_20e_coco-pretrain_gt-sample_kitti-3-class_moderate-79.3_20200207-a4a6a3c7.pth'  # noqa
