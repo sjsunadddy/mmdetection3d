@@ -100,7 +100,7 @@ model = dict(
 
 dataset_type = 'KittiDataset'
 data_root = 'data/kitti/'
-class_names = ['Car', 'Pedestrian', 'Cyclist']
+class_names = ['Pedestrian', 'Cyclist', 'Car']
 metainfo = dict(classes=class_names)
 input_modality = dict(use_lidar=True, use_camera=True)
 backend_args = None
