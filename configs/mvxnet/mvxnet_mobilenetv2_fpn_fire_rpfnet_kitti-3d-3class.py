@@ -57,7 +57,7 @@ model = dict(
         type='SparseEncoder', in_channels=128,
         sparse_shape=[41, 1600, 1408], order=('conv', 'norm', 'act')),
 
-    # ----------------------- RPFNet backbone --------------------
+    # ----------------------- FireRPFNet backbone --------------------
     pts_backbone=dict(
        # type='RPFNet',
         type='FireRPFNet',
