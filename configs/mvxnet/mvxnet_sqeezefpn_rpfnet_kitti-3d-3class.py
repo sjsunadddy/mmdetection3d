@@ -71,7 +71,7 @@ model = dict(
         sparse_shape=[41, 1600, 1408],
         order=('conv', 'norm', 'act')),
 
-    # ----------------------- PillarNet-LTS backbone -------------
+    # ----------------------- RPFNet backbone -------------
     pts_backbone=dict(
         type='RPFNet',
         in_channels=256,               # output of SparseEncoder
