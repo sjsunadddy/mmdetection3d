@@ -122,7 +122,8 @@ python demo/multi_modality_demo.py \
     data/kitti/testing/image_2/000068.png \
     data/kitti/kitti_infos_test.pkl \
     work_dirs/mvxnet_sqeezefpn_fire_rpfnet_kitti-3d-3class/mvxnet_sqeezefpn_fire_rpfnet_kitti-3d-3class.py \
-    work_dirs/mvxnet_sqeezefpn_fire_rpfnet_kitti-3d-3class/epoch_25.pth```
+    work_dirs/mvxnet_sqeezefpn_fire_rpfnet_kitti-3d-3class/epoch_25.pth
+```
 
 ### Pre-trained Model
 
