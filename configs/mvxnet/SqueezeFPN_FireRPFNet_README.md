@@ -152,7 +152,7 @@ Key configuration details:
 - Backbone: SqueezeFPN + FireRPFNet
 - Training schedule: 25 epochs with cosine learning rate
 - Input: Multi-modal (LiDAR point cloud + Camera image)
-- Classes: Car detection
+- Classes: Pedestrian, Cyclist , Car
 - Voxel size: [0.05, 0.05, 0.1]
 - Point cloud range: [0, -40, -3, 70.4, 40, 1]
 
