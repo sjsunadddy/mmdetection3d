@@ -1,4 +1,4 @@
-# Updated MVXNet with updated backbones(SqueezeFPN + FireRPFNet): Efficient Multi-Modal 3D Object Detection
+# MVXNet with custom backbones(SqueezeFPN + FireRPFNet): Efficient Multi-Modal 3D Object Detection
 
 ## Abstract
 
